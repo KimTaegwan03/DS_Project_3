@@ -18,7 +18,7 @@ using namespace std;
 
 class Graph{	
 protected:
-	bool m_Type;
+	bool m_Type;	// 0 = List, 1 = Matrix
 	int m_Size;
 
 public:

@@ -1,0 +1,3 @@
+LOAD graph_L.txt
+PRINT
+KRUSKAL
