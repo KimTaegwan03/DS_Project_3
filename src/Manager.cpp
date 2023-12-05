@@ -100,6 +100,22 @@ void Manager::run(const char* command_txt){
 		else if(!strcmp(p,"KRUSKAL")){
 			mKRUSKAL();
 		}
+		else if(!strcmp(p,"DIJKSTRA")){
+			p = strtok(NULL," ");
+
+			if(!strcmp(p,"Y") || !strcmp(p,"N")){	// BFS
+				char option = p[0];
+
+				p = strtok(NULL," ");
+				if(strlen(p))
+					mDIJKSTRA(option,atoi(p));
+				else
+					printErrorCode(700);
+			}
+			else{
+				printErrorCode(700);
+			}
+		}
 
 
 
@@ -214,13 +230,15 @@ bool Manager::mDFS(char option, int vertex)
 
 bool Manager::mDIJKSTRA(char option, int vertex)	
 {
-	
+	Dijkstra(graph,option,vertex,&fout);
 }
 
 bool Manager::mKRUSKAL()
 {
 	if(load)
-		Kruskal(graph,&fout);
+		if(!Kruskal(graph,&fout)){
+			printErrorCode(600);
+		}
 	else
 		printErrorCode(600);
 

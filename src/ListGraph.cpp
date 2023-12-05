@@ -22,12 +22,13 @@ void ListGraph::getAdjacentEdges(int vertex, map<int, int>* m)	 //Definition of 
 		
 		m->insert({iter->first,iter->second});
 
-		for(int i = 1;i<=m_Size;i++){
+		
+	}
+	for(int i = 1;i<=m_Size;i++){
 			if(m_List[i].find(vertex) != m_List[i].end()){
 				m->insert({i,m_List[i].find(vertex)->second});
 			}
 		}
-	}
 }
 
 void ListGraph::getAdjacentEdgesDirect(int vertex, map<int, int>* m)	//Definition of getAdjacentEdges(Directed graph)
