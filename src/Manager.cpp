@@ -69,8 +69,13 @@ void Manager::run(const char* command_txt){
 				char option = p[0];
 
 				p = strtok(NULL," ");
-				if(strlen(p))
-					mBFS(option,atoi(p));
+				if(strlen(p)){
+					int vertex = atoi(p);
+					p = strtok(NULL," ");
+					if(p) printErrorCode(300);
+
+					mBFS(option,vertex);
+				}
 				else
 					printErrorCode(300);
 			}
@@ -85,8 +90,13 @@ void Manager::run(const char* command_txt){
 				char option = p[0];
 
 				p = strtok(NULL," ");
-				if(strlen(p))
-					mDFS(option,atoi(p));
+				if(strlen(p)){
+					int vertex = atoi(p);
+					p = strtok(NULL," ");
+					if(p) printErrorCode(400);
+
+					mDFS(option,vertex);
+				}
 				else
 					printErrorCode(400);
 			}
@@ -95,7 +105,7 @@ void Manager::run(const char* command_txt){
 			}
 		}
 		else if(!strcmp(p,"KWANGWOON")){
-			//mKwoonWoon()
+			mKwoonWoon(1);
 		}
 		else if(!strcmp(p,"KRUSKAL")){
 			mKRUSKAL();
@@ -107,8 +117,13 @@ void Manager::run(const char* command_txt){
 				char option = p[0];
 
 				p = strtok(NULL," ");
-				if(strlen(p))
-					mDIJKSTRA(option,atoi(p));
+				if(strlen(p)){
+					int vertex = atoi(p);
+					p = strtok(NULL," ");
+					if(p) printErrorCode(700);
+
+					mDIJKSTRA(option,vertex);
+				}
 				else
 					printErrorCode(700);
 			}
@@ -116,16 +131,49 @@ void Manager::run(const char* command_txt){
 				printErrorCode(700);
 			}
 		}
+		else if(!strcmp(p,"BELLMANFORD")){
+			p = strtok(NULL," ");
+			if(!strcmp(p,"Y") || !strcmp(p,"N")){	// BFS
+				char option = p[0];
 
+				p = strtok(NULL," ");
+				if(strlen(p)){
+					int s_v = atoi(p);
 
+					p = strtok(NULL," ");
+					if(strlen(p)){
+						int e_v = atoi(p);
 
+						p = strtok(NULL," ");
+						if(p) printErrorCode(800);
+
+						mBELLMANFORD(option,s_v,e_v);
+					}
+					else{
+						printErrorCode(800);
+					}
+				}
+				else
+					printErrorCode(800);
+			}
+			else{
+				printErrorCode(800);
+			}
+		}
+		else if(!strcmp(p,"FLOYD")){
+			p = strtok(NULL," ");
+
+			if(!strcmp(p,"Y") || !strcmp(p,"N")){
+				mFLOYD(p[0]);
+			}
+			else{
+				printErrorCode(900);
+			}
+		}
 	}
-
-
-
 	
 	fin.close();
-	return;
+	return;	
 }
 
 bool Manager::LOAD(const char* filename)
@@ -173,72 +221,65 @@ bool Manager::LOAD(const char* filename)
 			}
 		}
 	}
+	else if(!strcmp(cmd,"M")){
+		unsigned int vertexCnt = 0;
+		int vertex = 0;
+
+		fgraph.getline(cmd,256);
+		vertexCnt = atoi(cmd);
+		graph = new MatrixGraph(1,vertexCnt);
+
+		for(int i = 1;i<=vertexCnt;i++){
+			fgraph.getline(cmd,256);
+
+			char* p = strtok(cmd," ");
+
+			for(int j = 1;j<=vertexCnt;j++){
+				graph->insertEdge(i,j,atoi(p));
+
+				p = strtok(NULL," ");
+			}
+		}
+	}
 }
 
 bool Manager::PRINT()	
 {
-	fout<<"======== PRINT========\n";
-	//[1]-> (2,6) -> (3,2)
-
-	if(graph->getType() == 0){
-		for(int i = 1;i<=graph->getSize();i++){
-			map<int,int>* printgraph = new map<int,int>;
-			graph->getAdjacentEdgesDirect(i,printgraph);
-
-			fout<<'['<<i<<']';
-			for(auto iter = printgraph->begin();iter!=printgraph->end();iter++){
-				fout<<"-> ("<<iter->first<<','<<iter->second<<") ";
-			}
-			fout<<'\n';
-		}
-	}
-	else{
-
-		// To Do:
-		// Matrix print
-
-	}
-
-	fout<<"=====================\n\n";
+	graph->printGraph(&fout);
 
 }
 
 bool Manager::mBFS(char option, int vertex)	
 {
-
-
-	// To Do :
-	// add vertex check condition
-
-
-
-	BFS(graph,option,vertex,&fout);
+	if(vertex <= graph->getSize())
+		BFS(graph,option,vertex,&fout);
+	else
+		printErrorCode(300);
 }
 
 bool Manager::mDFS(char option, int vertex)	
 {
-
-
-	// To Do :
-	// add vertex check condition
-
-
-	DFS(graph,option,vertex,&fout);
-
-	
+	if(vertex <= graph->getSize())
+		DFS(graph,option,vertex,&fout);
+	else
+		printErrorCode(400);
 }
 
 bool Manager::mDIJKSTRA(char option, int vertex)	
 {
-	Dijkstra(graph,option,vertex,&fout);
+	if(vertex <= graph->getSize())
+		Dijkstra(graph,option,vertex,&fout);
+	else
+		printErrorCode(700);
 }
 
 bool Manager::mKRUSKAL()
 {
-	if(load)
+	if(load){
 		if(!Kruskal(graph,&fout)){
 			printErrorCode(600);
 		}
+	}
 	else
 		printErrorCode(600);
 
@@ -247,16 +288,23 @@ bool Manager::mKRUSKAL()
 
 bool Manager::mBELLMANFORD(char option, int s_vertex, int e_vertex) 
 {
-	
+	if(s_vertex > 0 && e_vertex <= graph->getSize()){
+		if(!Bellmanford(graph,option,s_vertex,e_vertex,&fout)){
+			printErrorCode(800);
+		}
+	}
+	else
+		printErrorCode(800);
 }
 
 bool Manager::mFLOYD(char option)
 {
-	
+	if(!FLOYD(graph,option,&fout))
+		printErrorCode(900);
 }
 
 bool Manager::mKwoonWoon(int vertex) {
-	
+	KWANGWOON(graph,vertex,&fout);
 }
 
 void Manager::printErrorCode(int n)

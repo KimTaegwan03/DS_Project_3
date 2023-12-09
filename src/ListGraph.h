@@ -17,6 +17,7 @@ public:
 	void insertEdge(int from, int to, int weight);	
 	bool printGraph(ofstream *fout);
 
+	vector<int> getKWgraph(int vertex);
 };
 
 #endif

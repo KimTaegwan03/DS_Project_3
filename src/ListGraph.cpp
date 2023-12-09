@@ -7,6 +7,8 @@ using namespace std;
 ListGraph::ListGraph(bool type, int size) : Graph(type, size)
 {
 	m_List = new map<int,int>[size+1];    // key = dest, value = weight
+	kw_graph = new vector<int>[size+1];
+
 }
 
 ListGraph::~ListGraph()	
@@ -40,18 +42,30 @@ void ListGraph::getAdjacentEdgesDirect(int vertex, map<int, int>* m)	//Definitio
 
 void ListGraph::insertEdge(int from, int to, int weight) //Definition of insertEdge
 {
-	if(from <= m_Size)
+	if(from <= m_Size){
 		m_List[from].insert({to,weight});
+		kw_graph[from].push_back(to);
+		kw_graph[to].push_back(from);
+		sort(kw_graph[from].begin(),kw_graph[from].end());
+		sort(kw_graph[to].begin(),kw_graph[to].end());
+	}
 }
 
 bool ListGraph::printGraph(ofstream *fout)	//Definition of print Graph
 {
-	for(int i = 1;i<=m_Size;i++){
-		*fout<<i<<'\n';
-		for(auto j = m_List[i].begin(); j!= m_List[i].end();j++){
-			*fout<<j->first<<' '<<j->second<<'\n';
-		}
-	}
+	*fout<<"======== PRINT========\n";
 
-	return 1;
+	for(int i = 1;i<=m_Size;i++){
+		*fout<<'['<<i<<']';
+		for(auto iter = m_List[i].begin();iter!=m_List[i].end();iter++){
+			*fout<<"-> ("<<iter->first<<','<<iter->second<<") ";
+		}
+		*fout<<'\n';
+	}
+	
+	*fout<<"=====================\n\n";
+}
+
+vector<int> ListGraph::getKWgraph(int vertex){
+	return kw_graph[vertex];
 }
