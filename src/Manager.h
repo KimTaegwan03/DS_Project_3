@@ -8,6 +8,7 @@ private:
 	Graph* graph;	
 	ofstream fout;	
 	int load;
+	char* cmd;
 
 public:
 	Manager();	
