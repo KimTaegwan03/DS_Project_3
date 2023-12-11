@@ -28,12 +28,14 @@ MatrixGraph::~MatrixGraph()
 
 void MatrixGraph::getAdjacentEdges(int vertex, map<int, int>* m)
 {	
+    // Insert edge from the vertex
     for(int j = 1;j<=m_Size;j++){
         if(m_Mat[vertex][j] != 0){
             m->insert({j,m_Mat[vertex][j]});
         }
     }
 
+    // Insert edge to the vertex
     for(int i = 1;i<=m_Size;i++){
         if(m_Mat[i][vertex] != 0){
             m->insert({i,m_Mat[i][vertex]});
@@ -43,6 +45,7 @@ void MatrixGraph::getAdjacentEdges(int vertex, map<int, int>* m)
 
 void MatrixGraph::getAdjacentEdgesDirect(int vertex, map<int, int>* m)
 {
+    // Insert edge from the vertex
 	for(int j = 1;j<=m_Size;j++){
         if(m_Mat[vertex][j] != 0){
             m->insert({j,m_Mat[vertex][j]});

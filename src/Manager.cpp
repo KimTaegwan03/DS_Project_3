@@ -19,6 +19,8 @@ Manager::~Manager()
 		delete graph;	
 	if(fout.is_open())	//if fout is opened, close file
 		fout.close();	//close log.txt File
+	
+	delete[] cmd;
 }
 
 void Manager::run(const char* command_txt){
@@ -170,6 +172,13 @@ void Manager::run(const char* command_txt){
 				printErrorCode(900);
 			}
 		}
+		else if(!strcmp(p,"EXIT")){
+			fin.close();
+			return;	
+		}
+		else{
+			printErrorCode(1000);
+		}
 	}
 	
 	fin.close();
@@ -241,6 +250,10 @@ bool Manager::LOAD(const char* filename)
 			}
 		}
 	}
+
+	fout<<"======== LOAD ========\n";
+	fout<<"Success\n";
+	fout<<"=====================\n\n";
 }
 
 bool Manager::PRINT()	
@@ -251,24 +264,36 @@ bool Manager::PRINT()
 
 bool Manager::mBFS(char option, int vertex)	
 {
-	if(vertex <= graph->getSize())
-		BFS(graph,option,vertex,&fout);
+	if(load){
+		if(0 < vertex && vertex <= graph->getSize())
+			BFS(graph,option,vertex,&fout);
+		else
+			printErrorCode(300);
+	}
 	else
 		printErrorCode(300);
 }
 
 bool Manager::mDFS(char option, int vertex)	
 {
-	if(vertex <= graph->getSize())
-		DFS(graph,option,vertex,&fout);
+	if(load){
+		if(0 < vertex && vertex <= graph->getSize())
+			DFS(graph,option,vertex,&fout);
+		else
+			printErrorCode(400);
+	}
 	else
 		printErrorCode(400);
 }
 
 bool Manager::mDIJKSTRA(char option, int vertex)	
 {
-	if(vertex <= graph->getSize())
-		Dijkstra(graph,option,vertex,&fout);
+	if(load){
+		if(0 < vertex && vertex <= graph->getSize())
+			Dijkstra(graph,option,vertex,&fout);
+		else
+			printErrorCode(700);
+	}
 	else
 		printErrorCode(700);
 }
@@ -282,16 +307,18 @@ bool Manager::mKRUSKAL()
 	}
 	else
 		printErrorCode(600);
-
-	return 1;
 }
 
 bool Manager::mBELLMANFORD(char option, int s_vertex, int e_vertex) 
 {
-	if(s_vertex > 0 && e_vertex <= graph->getSize()){
-		if(!Bellmanford(graph,option,s_vertex,e_vertex,&fout)){
-			printErrorCode(800);
+	if(load){
+		if(0 < s_vertex && s_vertex <= graph->getSize() && 0 < e_vertex && e_vertex <= graph->getSize()){
+			if(!Bellmanford(graph,option,s_vertex,e_vertex,&fout)){
+				printErrorCode(800);
+			}
 		}
+		else
+			printErrorCode(800);
 	}
 	else
 		printErrorCode(800);
@@ -299,12 +326,19 @@ bool Manager::mBELLMANFORD(char option, int s_vertex, int e_vertex)
 
 bool Manager::mFLOYD(char option)
 {
-	if(!FLOYD(graph,option,&fout))
+	if(load){
+		if(!FLOYD(graph,option,&fout))
+			printErrorCode(900);
+	}
+	else
 		printErrorCode(900);
 }
 
 bool Manager::mKwoonWoon(int vertex) {
-	KWANGWOON(graph,vertex,&fout);
+	if(load)
+		KWANGWOON(graph,vertex,&fout);
+	else
+		printErrorCode(500);
 }
 
 void Manager::printErrorCode(int n)

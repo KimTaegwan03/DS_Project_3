@@ -13,19 +13,24 @@ ListGraph::ListGraph(bool type, int size) : Graph(type, size)
 
 ListGraph::~ListGraph()	
 {
+	for(int i = 0;i<=m_Size;i++){
+		m_List[i].clear();
+		kw_graph[i].clear();
+	}
+
+	delete[] m_List;
+	delete[] kw_graph;
 	
 }
 
 void ListGraph::getAdjacentEdges(int vertex, map<int, int>* m)	 //Definition of getAdjacentEdges(No Direction == Undirected)
 {
+	// Insert edge from vertex
 	for(auto iter = m_List[vertex].begin(); iter != m_List[vertex].end() ; iter++){
-		int fst = iter->first;
-		int snd = iter->second;
-		
 		m->insert({iter->first,iter->second});
-
-		
 	}
+
+	// Insert edge to the vertex
 	for(int i = 1;i<=m_Size;i++){
 			if(m_List[i].find(vertex) != m_List[i].end()){
 				m->insert({i,m_List[i].find(vertex)->second});
@@ -34,7 +39,8 @@ void ListGraph::getAdjacentEdges(int vertex, map<int, int>* m)	 //Definition of 
 }
 
 void ListGraph::getAdjacentEdgesDirect(int vertex, map<int, int>* m)	//Definition of getAdjacentEdges(Directed graph)
-{
+{	
+	// Insert edge from the vertex
 	for(auto iter = m_List[vertex].begin(); iter != m_List[vertex].end() ; iter++){
 		m->insert({iter->first,iter->second});
 	}
