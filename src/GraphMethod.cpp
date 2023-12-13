@@ -107,25 +107,27 @@ bool DFS(Graph* graph, char option, int vertex, ofstream *fout)     // Function 
     }
 
     dfsStack.push(vertex);      // Push start vertex to stack
-    visit[vertex] = 1;
 
     while(!dfsStack.empty()){
         int topVertex = dfsStack.top();
         dfsStack.pop();
 
-        // Print format
-        if(!start){
-            *fout<<topVertex;
-            start = 1;
-        }
-        else
-            *fout<<" -> "<<topVertex;
+        if(!visit[topVertex]){
+            visit[topVertex] = 1;
 
-        // Push connected vertex, which is not visited
-        for(auto iter = copiedGraph[topVertex].rbegin();iter != copiedGraph[topVertex].rend();iter++){
-            if(!visit[iter->first]){
-                dfsStack.push(iter->first);
-                visit[iter->first] = 1;
+            // Print format
+            if(!start){
+                *fout<<topVertex;
+                start = 1;
+            }
+            else
+                *fout<<" -> "<<topVertex;
+
+            // Push connected vertex, which is not visited
+            for(auto iter = copiedGraph[topVertex].rbegin();iter != copiedGraph[topVertex].rend();iter++){
+                if(!visit[iter->first]){
+                    dfsStack.push(iter->first);
+                }
             }
         }
     }
@@ -570,7 +572,6 @@ bool KWANGWOON(Graph* graph, int vertex, ofstream* fout)
                     cnt++;
                 }
                 KWUpdate(seg[curNode],0,((ListGraph*)graph)->getKWgraph(curNode).size()-1,cnt,1,-1);
-            
             }
         }
 
